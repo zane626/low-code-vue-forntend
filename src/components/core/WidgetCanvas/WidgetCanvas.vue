@@ -24,14 +24,8 @@ export default {
   data () {
     return {}
   },
-  computed: {
-    draggableProps () {
-      return {
-        group: {
-          name: `level_${this.currentLevel}`
-        }
-      }
-    }
+  computed: {},
+  mounted () {
   },
   methods: {
     renderElement (h, item) {
@@ -42,7 +36,7 @@ export default {
             ..._.get(item, 'options.attrs', {}),
             id: item.model
           }
-        }, [this.renderChildren(h, item)])
+        })
       }
     },
     renderChildren (h, el) {
@@ -57,38 +51,74 @@ export default {
     },
     addField () {
     },
-    handleMoveEnd () {
-      console.log('handleMoveEnd', ...arguments)
+    handleStart () {
+      console.log('handleStart', ...arguments, this.currentLevel)
     },
-    handleMoveStart () {
-      console.log('handleMoveStart', ...arguments)
+    handleEnd () {
+      console.log('handleMoveEnd', ...arguments, this.currentLevel)
     },
-    handleMove () {
-      console.log('handleMove', ...arguments)
+    handleRemove () {
+      console.log('handleRemove', ...arguments, this.currentLevel)
+    },
+    handleChoose () {
+      console.log('handleChoose', ...arguments, this.currentLevel)
+    },
+    handleUnChoose () {
+      console.log('handleUnChoose', ...arguments, this.currentLevel)
+    },
+    handleSort () {
+      console.log('handleSort', ...arguments, this.currentLevel)
+    },
+    handleFilter () {
+      console.log('handleFilter', ...arguments, this.currentLevel)
+    },
+    handleClone () {
+      console.log('handleClone', ...arguments, this.currentLevel)
     },
     handleWidgetAdd () {
-      console.log('handleWidgetAdd', ...arguments)
+      console.log('handleWidgetAdd', ...arguments, this.currentLevel)
     },
-    handleWidgetUpdate (val) {
-      console.log('handleWidgetUpdate', val.from, val.to, val)
+    handleWidgetUpdate () {
+      console.log('handleWidgetUpdate', ...arguments, this.currentLevel)
+    },
+    handleWidgetChange () {
+      console.log('handleWidgetChange', ...arguments, this.currentLevel)
     }
   },
   render (h) {
+    const events = {
+      add: this.handleWidgetAdd.bind(this),
+      update: this.handleWidgetUpdate.bind(this),
+      change: this.handleWidgetChange.bind(this),
+      start: this.handleStart,
+      end: this.handleEnd,
+      remove: this.handleRemove,
+      choose: this.handleChoose,
+      unchoose: this.handleUnChoose,
+      sort: this.handleSort,
+      filter: this.handleFilter,
+      clone: this.handleClone
+    }
+    const draggableProps = {
+      group: 'people',
+      ghostClass: 'ghost',
+      animation: 200
+    }
     return (
       <draggable
         class="widget-draggable"
         list={this.list}
-        {...this.draggableProps}
-        on={{
-          add: this.handleWidgetAdd.bind(this),
-          update: this.handleWidgetUpdate.bind(this)
-        }}
+        group={draggableProps.group}
+        ghostClass={draggableProps.ghostClass}
+        animation={draggableProps.animation}
+        on={events}
       >
         {
           this.list.map((el) => {
             return (
               <div key={el.model}>
                 {this.renderElement(h, _.cloneDeep(el))}
+                {this.renderChildren(h, el)}
               </div>
             )
           })

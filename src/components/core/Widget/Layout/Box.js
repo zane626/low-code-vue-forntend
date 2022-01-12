@@ -3,6 +3,7 @@
  * @description .
  */
 import { Node } from 'common/builder'
+import onlyKey from 'common/onlyKey'
 
 const box = new Node()
 box.style = {
@@ -10,11 +11,10 @@ box.style = {
   height: '50px'
 }
 box.class = { 'widget-box': true }
-box.domProps.innerHTML = '123'
 export default {
   name: '盒子',
   children: [],
-  model: '',
+  model: onlyKey.getKey(),
   tag: 'div',
   options: box.getJSON()
 }

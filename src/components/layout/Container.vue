@@ -5,7 +5,7 @@
         @on-add-field="handleField"
       />
     </el-aside>
-    <el-main>
+    <el-main class="Container-main">
       <widget-canvas
         ref="widgetCanvas"
         :list="list"
@@ -65,5 +65,11 @@ export default {
 <style lang="scss" scoped>
 .Container {
   display: flex;
+  height: 100vh;
+
+  .Container-main {
+    height: 100%;
+    overflow: auto;
+  }
 }
 </style>

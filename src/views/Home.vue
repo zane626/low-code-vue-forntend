@@ -13,6 +13,7 @@
  * @description .
  */
 import Container from 'components/layout/Container'
+
 export default {
   name: 'Home',
   components: {
@@ -21,7 +22,8 @@ export default {
   data () {
     return {
       props: {
-        layoutFields: ['Box']
+        layoutFields: ['Box'],
+        elementFields: ['Table']
       }
     }
   },

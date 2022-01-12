@@ -21,7 +21,7 @@ class OnlyKey {
   }
 
   getKey () {
-    const key = 'jing_' + Math.random().toString(36).slice(-8)
+    const key = 'vue_' + Math.random().toString(36).slice(-8)
     return this.has(key) ? this.getKey() : key
   }
 }

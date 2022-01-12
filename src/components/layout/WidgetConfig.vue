@@ -1,6 +1,6 @@
 <template>
   <div class="WidgetConfig">
-    配置区域
+    <h3>配置区域</h3>
   </div>
 </template>
 
@@ -20,5 +20,7 @@ export default {
 
 <style lang="scss" scoped>
 .WidgetConfig {
+  height: 100vh;
+  overflow: auto;
 }
 </style>
