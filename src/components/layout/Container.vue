@@ -12,7 +12,7 @@
       />
     </el-main>
     <el-aside>
-      <WidgetConfig/>
+      <WidgetConfig :data="list"/>
     </el-aside>
   </el-container>
 </template>

@@ -1,6 +1,7 @@
 <template>
   <div class="WidgetConfig">
     <h3>配置区域</h3>
+    <pre>{{ data }}</pre>
   </div>
 </template>
 
@@ -11,6 +12,10 @@
  */
 export default {
   name: 'WidgetConfig',
+  props: {
+    data: [Object, Array],
+    default: () => ({})
+  },
   data () {
     return {}
   },
@@ -22,5 +27,6 @@ export default {
 .WidgetConfig {
   height: 100vh;
   overflow: auto;
+  text-align: left;
 }
 </style>

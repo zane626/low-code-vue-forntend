@@ -4,7 +4,8 @@
  * @description 画布
  */
 import _ from 'lodash'
-import draggable from 'vuedraggable'
+import draggable from 'vuedraggable/src/vuedraggable'
+import OnlyKey from 'common/onlyKey'
 
 export default {
   name: 'WidgetCanvas',
@@ -28,7 +29,7 @@ export default {
   mounted () {
   },
   methods: {
-    renderElement (h, item) {
+    renderElement (h, item, slot = []) {
       if (this.canAddChild(item)) {
         return h(item.tag, {
           ...item.options,
@@ -36,11 +37,34 @@ export default {
             ..._.get(item, 'options.attrs', {}),
             id: item.model
           }
+        }, slot)
+      } else {
+        const self = this
+        return h(item.tag, {
+          ...item.options,
+          attrs: {
+            ..._.get(item, 'options.attrs', {}),
+            id: item.model
+          },
+          scopedSlots: {
+            default: function () {
+              return self.renderSlots(h, item)
+            }
+          }
         })
       }
     },
+    renderSlots (h, item) {
+      switch (item.tag) {
+        case 'El-Table': {
+          return item.options.columns.map((col) => h('El-Table-Column', { props: col }))
+        }
+        default:
+          return ''
+      }
+    },
     renderChildren (h, el) {
-      if (this.canAddChild(el)) {
+      if (this.canAddChild(el) && this.currentLevel < 1) {
         return (<widget-canvas list={el.children} currentLevel={this.currentLevel + 1}/>)
       } else {
         return ''
@@ -75,7 +99,16 @@ export default {
     handleClone () {
       console.log('handleClone', ...arguments, this.currentLevel)
     },
-    handleWidgetAdd () {
+    handleWidgetAdd (evt) {
+      let newIndex = evt.newIndex
+      const to = evt.to
+      if (newIndex >= this.list.length) newIndex--
+      console.log(evt.target, to, newIndex)
+      this.$set(this.list, newIndex, _.cloneDeep(this.list[newIndex]))
+      this.$set(this.list, newIndex, {
+        ...this.list[newIndex],
+        model: OnlyKey.getKey()
+      })
       console.log('handleWidgetAdd', ...arguments, this.currentLevel)
     },
     handleWidgetUpdate () {
@@ -117,8 +150,7 @@ export default {
           this.list.map((el) => {
             return (
               <div key={el.model}>
-                {this.renderElement(h, _.cloneDeep(el))}
-                {this.renderChildren(h, el)}
+                {this.renderElement(h, _.cloneDeep(el), [this.renderChildren(h, el)])}
               </div>
             )
           })
@@ -130,6 +162,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.widget-draggable {
+  padding-bottom: 40px;
+  border: 1px solid red;
+}
+
 .widget-canvas {
 }
 </style>
