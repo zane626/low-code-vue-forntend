@@ -6,9 +6,10 @@
 import _ from 'lodash'
 import draggable from 'vuedraggable/src/vuedraggable'
 import OnlyKey from 'common/onlyKey'
-
+import { BUILDER } from 'common/name'
 export default {
   name: 'WidgetCanvas',
+  inject: [BUILDER],
   props: {
     currentLevel: {
       type: Number,
@@ -42,6 +43,7 @@ export default {
         const self = this
         return h(item.tag, {
           ...item.options,
+          data: self.addMockValue(item),
           attrs: {
             ..._.get(item, 'options.attrs', {}),
             id: item.model
@@ -53,6 +55,21 @@ export default {
           }
         })
       }
+    },
+    addMockValue (item) {
+      const data = _.cloneDeep(item.options.props.data)
+      switch (item.tag) {
+        case 'El-Table':
+          data.forEach((i) => {
+            item.options.columns.forEach((column) => {
+              if (!(column in i)) {
+                i[column] = '填充数据'
+              }
+            })
+          })
+          break
+      }
+      return data
     },
     renderSlots (h, item) {
       switch (item.tag) {
@@ -76,46 +93,49 @@ export default {
     addField () {
     },
     handleStart () {
-      console.log('handleStart', ...arguments, this.currentLevel)
+      // console.log('handleStart', ...arguments, this.currentLevel)
     },
     handleEnd () {
-      console.log('handleMoveEnd', ...arguments, this.currentLevel)
+      // console.log('handleMoveEnd', ...arguments, this.currentLevel)
     },
     handleRemove () {
-      console.log('handleRemove', ...arguments, this.currentLevel)
+      // console.log('handleRemove', ...arguments, this.currentLevel)
     },
     handleChoose () {
-      console.log('handleChoose', ...arguments, this.currentLevel)
+      // console.log('handleChoose', ...arguments, this.currentLevel)
     },
     handleUnChoose () {
-      console.log('handleUnChoose', ...arguments, this.currentLevel)
+      // console.log('handleUnChoose', ...arguments, this.currentLevel)
     },
     handleSort () {
-      console.log('handleSort', ...arguments, this.currentLevel)
+      // console.log('handleSort', ...arguments, this.currentLevel)
     },
     handleFilter () {
-      console.log('handleFilter', ...arguments, this.currentLevel)
+      // console.log('handleFilter', ...arguments, this.currentLevel)
     },
     handleClone () {
-      console.log('handleClone', ...arguments, this.currentLevel)
+      // console.log('handleClone', ...arguments, this.currentLevel)
     },
     handleWidgetAdd (evt) {
       let newIndex = evt.newIndex
-      const to = evt.to
+      // const to = evt.to
       if (newIndex >= this.list.length) newIndex--
-      console.log(evt.target, to, newIndex)
+      // console.log(evt.target, to, newIndex)
       this.$set(this.list, newIndex, _.cloneDeep(this.list[newIndex]))
       this.$set(this.list, newIndex, {
         ...this.list[newIndex],
         model: OnlyKey.getKey()
       })
-      console.log('handleWidgetAdd', ...arguments, this.currentLevel)
+      // console.log('handleWidgetAdd', ...arguments, this.currentLevel)
     },
     handleWidgetUpdate () {
-      console.log('handleWidgetUpdate', ...arguments, this.currentLevel)
+      // console.log('handleWidgetUpdate', ...arguments, this.currentLevel)
     },
     handleWidgetChange () {
-      console.log('handleWidgetChange', ...arguments, this.currentLevel)
+      // console.log('handleWidgetChange', ...arguments, this.currentLevel)
+    },
+    click (el) {
+      this[BUILDER].setFocus(el)
     }
   },
   render (h) {
@@ -148,8 +168,11 @@ export default {
       >
         {
           this.list.map((el) => {
+            const clickEvent = {
+              click: this.click.bind(this, el)
+            }
             return (
-              <div key={el.model}>
+              <div key={el.model} on={clickEvent}>
                 {this.renderElement(h, _.cloneDeep(el), [this.renderChildren(h, el)])}
               </div>
             )

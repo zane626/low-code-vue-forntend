@@ -11,8 +11,8 @@
         :list="list"
       />
     </el-main>
-    <el-aside>
-      <WidgetConfig :data="list"/>
+    <el-aside width="500px">
+      <WidgetConfig :data="focusValue"/>
     </el-aside>
   </el-container>
 </template>
@@ -47,7 +47,8 @@ export default {
   },
   data () {
     return {
-      list: []
+      list: [],
+      focusValue: {}
     }
   },
   methods: {
@@ -57,6 +58,9 @@ export default {
     },
     emitEvent (eventName, ...val) {
       this.$emit('listener:' + eventName, val)
+    },
+    setFocus (el) {
+      this.focusValue = el
     }
   }
 }

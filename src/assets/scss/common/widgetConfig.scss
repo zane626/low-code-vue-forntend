@@ -1,0 +1,21 @@
+.widgetConfig-columns {
+  width: 100%;
+  padding-top: 40px;
+
+  &-column {
+    display: flex;
+    margin-bottom: 20px;
+
+    .widgetConfig-columns-label {
+      margin-right: 5px;
+
+      &:not(:first-child) {
+        margin-left: 10px;
+      }
+
+      &:after {
+        content: ':';
+      }
+    }
+  }
+}

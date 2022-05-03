@@ -3,10 +3,14 @@
  * @description .
  */
 const config = require('../config')
+
 module.exports = {
   publicPath: '/',
   productionSourceMap: config.build.productionSourceMap,
   lintOnSave: config.build.lintOnSave,
+  configureWebpack: config => {
+    config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true
+  },
   chainWebpack: webpackConfig => {
     webpackConfig
       .mode('production')
